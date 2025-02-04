@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión Backup BBDD</title>
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body>
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<h1>Gestión Backup BBDD</h1>
+<a href="/">Volver a inicio</a>
+
+<form action="/backup/importar" method="POST" enctype="multipart/form-data">
+    <label for="file">Selecciona el archivo .sql:</label>
+    <input type="file" id="file" name="file" accept=".sql" required>
+    <button type="submit">Importar</button>
+</form>
+
+<br>
+<a href="/backup/exportar"><button>Exportar</button></a>
+
+<br>
+<a href="/backup/exportarZip"><button>Exportar Zip</button></a>
+
+
+</body>
+</html>

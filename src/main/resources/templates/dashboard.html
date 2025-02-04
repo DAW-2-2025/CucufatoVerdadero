@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+</head>
+
+<body class="bg-slate-200">
+
+    <content class="relative flex flex-col items-center mt-4">
+        <div class="flex flex-col absolute top-1 w-3/4 bg-slate-50 shadow-lg rounded-md border-slate-600/5 border divide-y divide-slate-600/25 text-slate-600 z-20">
+            <div class="flex items-center gap-x-2 p-3">
+                <i class="bi bi-search text-lg"></i>
+                <input id="searchbar" type="text" placeholder="Busqueda rápida" class="peer bg-transparent border-0 focus:outline-none focus:border-none placeholder:text-slate-600/50 p-1 m-0 w-full"/>
+                <button class="peer-focus:flex hidden text-xs font-bold bg-[#1D1E2C] text-slate-500 p-2 rounded">Esc</button>
+                <div class="peer-focus:hidden flex gap-x-2">
+                    <button class="text-xs font-bold bg-[#1D1E2C] text-slate-500 p-2 rounded">Ctrl</button>
+                    <span class="-mx-1 p-0 ">+</span>
+                    <button class="text-xs font-bold bg-[#1D1E2C] text-slate-500 p-2 rounded">B</button>
+                </div>
+            </div>
+            <div class="pb-2 hidden">
+                <div class="flex justify-center mt-2">
+                    <ul class="flex relative">
+                        <div id="searchbar-tabs-pointer" class="w-24 h-1 bg-slate-600 absolute -bottom-0.5 left-0 rounded transition-all duration-200"></div>
+                        <li data-index="0" class="px-2 pb-1 w-24 cursor-pointer text-center searchbar-tab">Todo</li>
+                        <li data-index="1" class="px-2 pb-1 w-24 cursor-pointer text-center searchbar-tab text-slate-600/50 hover:text-slate-700/75">Usuarios</li>
+                        <li data-index="2" class="px-2 pb-1 w-24 cursor-pointer text-center searchbar-tab text-slate-600/50 hover:text-slate-700/75">Materiales</li>
+                        <li data-index="3" class="px-2 pb-1 w-24 cursor-pointer text-center searchbar-tab text-slate-600/50 hover:text-slate-700/75">Centros</li>
+                    </ul>
+                </div>
+                <h3 class="font-bold p-2 ps-4">Resultados</h3>
+                <div id="results-list"></div>
+            </div>
+            <div class="pb-2 hidden">
+                <h3 class="font-bold p-2 ps-4">Búsquedas recientes</h3>
+                <div id="recents-list"></div>
+            </div>
+        </div>
+        <button id="btn-crear-logs" class="absolute top-0 right-4 bg-sky-700/75 text-white/75 px-4 py-2 rounded-md hover:bg-sky-900/50 hover:text-white/50 hover:shadow-lg transition-all duration-300">Crear logs</button>
+
+        <div class="flex justify-center mt-20">
+            <ul class="flex relative">
+                <div id="tabs-pointer" class="w-24 h-1 bg-[#1D1E2C] absolute -bottom-0.5 left-0 rounded transition-all duration-200"></div>
+                <li data-index="0" class="tab px-2 pb-1 w-24 cursor-pointer text-center translate-color duration-200">Todo</li>
+                <li data-index="1" class="tab px-2 pb-1 w-24 cursor-pointer text-center translate-color duration-200 text-slate-600/50 hover:text-[#1D1E2C]/75">Usuarios</li>
+                <li data-index="2" class="tab px-2 pb-1 w-24 cursor-pointer text-center translate-color duration-200 text-slate-600/50 hover:text-[#1D1E2C]/75">Materiales</li>
+                <li data-index="3" class="tab px-2 pb-1 w-24 cursor-pointer text-center translate-color duration-200 text-slate-600/50 hover:text-[#1D1E2C]/75">Centros</li>
+            </ul>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 p-8 w-full z-10">
+            <div class="flex flex-col col-span-1 items-center w-full p-2 bg-slate-50 shadow-xl rounded-lg border border-slate-600/5 text-slate-600 selection:bg-slate-300/75 selection:text-slate-800/75">
+                <h1 class="font-bold text-lg text-slate-600 text-balance text-center">Estado general de materiales y préstamos</h1>
+                <div class="size-56 relative">
+                    <canvas id="chart"></canvas>
+                </div>
+                <div class="flex gap-3 justify-evenly mt-3">
+                    <div class="flex gap-1 items-center">
+                        <div class="size-4 bg-[#4bc0c0] rounded-sm"></div>
+                        <span>funcionales</span>
+                    </div>
+                    <div class="flex gap-1 items-center">
+                        <div class="size-4 bg-[#ffcd56] rounded-sm"></div>
+                        <span>averiados</span>
+                    </div>
+                    <div class="flex gap-1 items-center">
+                        <div class="size-4 bg-[#ff6384] rounded-sm"></div>
+                        <span>rotos</span>
+                    </div>
+                </div>
+                <div class="flex gap-3 justify-evenly">
+                    <div class="flex gap-1 items-center">
+                        <div class="size-4 bg-[#36a2eb] rounded-sm"></div>
+                        <span>disponibles</span>
+                    </div>
+                    <div class="flex gap-1 items-center">
+                        <div class="size-4 bg-[#c9cbcf] rounded-sm"></div>
+                        <span>prestados</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-span-3 flex flex-col items-center w-full p-4 bg-slate-50 shadow-xl rounded-lg border border-slate-600/5 text-slate-600 selection:bg-slate-300/75 selection:text-slate-800/75">
+                <div class="flex flex-col sm:flex-row gap-4 w-full">
+                    <div class="flex flex-col basis-2/3 w-full">
+                        <div><h2 class="text-2xl font-semibold leading-tight">Préstamos activos</h2></div>
+                        <div class="py-4 overflow-x-auto">
+                            <div class="inline-block min-w-full border border-slate-600/5 rounded-lg overflow-y-auto h-64">
+                                <table id="prestamos-activos" class="hidden relative min-w-full leading-normal">
+                                    <thead class="sticky top-0 z-20">
+                                        <tr>
+                                            <th
+                                                class="p-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Usuario
+                                            </th>
+                                            <th
+                                                class="p-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Material
+                                            </th>
+                                            <th
+                                                class="p-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Fecha
+                                            </th>
+                                            <th
+                                                class="p-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24">
+                                                Estado
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="group/row">
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <div class="ml-3">
+                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                        Jose Gomez
+                                                    </p>
+                                                    <p class="text-gray-600 whitespace-no-wrap">12345678Z</p>
+                                                </div>
+                                            </td>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <div class="flex">
+                                                    <div>
+                                                        <p class="text-gray-900 whitespace-no-wrap">
+                                                            Camaras Panasonic
+                                                        </p>
+                                                        <p class="text-gray-600 whitespace-no-wrap">12345678Z</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <p class="text-rose-900 whitespace-no-wrap">Sept 18, 2025</p>
+                                                <p class="text-rose-600 whitespace-no-wrap">Sept 28, 2025</p>
+                                            </td>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <span class="relative inline-block px-3 py-1 font-semibold text-rose-900 leading-tight group-hover/row:hidden">
+                                                    <span aria-hidden
+                                                        class="absolute inset-0 bg-rose-200 opacity-50 rounded-full"></span>
+                                                    <span class="relative">Vencido</span>
+                                                </span>
+                                                <div class="inline-block text-xl text-gray-500 hover:text-gray-700 pe-2">
+                                                    <button class="group/btn">
+                                                        <i class="bi bi-chat-left hidden group-hover/row:inline group-hover/btn:hidden"></i>
+                                                        <i class="bi bi-chat-left-fill hidden group-hover/btn:inline" title="Abrir chat en Teams"></i>
+                                                    </button>
+
+                                                    <button class="group/btn">
+                                                        <i class="bi bi-check2-square hidden group-hover/row:inline group-hover/btn:hidden"></i>
+                                                        <i class="bi bi-check-lg hidden group-hover/btn:inline" title="Marcar como entregado"></i>
+                                                    </button>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- Componente esqueleto-->
+                                <table class="relative min-w-full leading-normal animate-pulse">
+                                    <thead class="sticky top-0 z-20 h-10 bg-slate-300/75">
+                                    <tr class="">
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="group/row"><td colspan="5" class="h-10 bg-slate-300/25"></td></tr>
+                                    <tr class="group/row"><td colspan="5" class="h-10"></td></tr>
+                                    <tr class="group/row"><td colspan="5" class="h-10 bg-slate-300/25"></td></tr>
+                                    <tr class="group/row"><td colspan="5" class="h-10"></td></tr>
+                                    <tr class="group/row"><td colspan="5" class="h-10 bg-slate-300/25"></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col basis-1/3 w-full">
+                        <div><h2 class="text-2xl font-semibold leading-tight">Materiales más pedidos</h2></div>
+                        <div class="py-4 overflow-x-auto">
+                            <div class="inline-block min-w-full border border-slate-600/5 rounded-lg overflow-y-auto h-64">
+                                <table id="materiales-mas-pedidos" class="hidden relative min-w-full leading-normal">
+                                    <thead class="sticky top-0 z-20">
+                                        <tr>
+                                            <th
+                                                class="p-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Material
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                Cantidad
+                                            </th>
+                                            <th
+                                                class="p-2 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider text-nowrap">
+                                                P/mes
+                                            </th>
+                                            <th class="p-2 border-b-2 border-gray-200 bg-gray-100"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <div class="flex">
+                                                    <div class="ml-3">
+                                                        <p class="text-gray-900 whitespace-no-wrap">
+                                                            Camaras Panasonic
+                                                        </p>
+                                                        <p class="text-gray-600 whitespace-no-wrap">12345678Z</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <div>
+                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                        3 disponibles
+                                                    </p>
+                                                    <p class="text-gray-600 whitespace-no-wrap">2 rotos</p>
+                                                </div>
+                                            </td>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm">
+                                                <p class="text-gray-900 whitespace-no-wrap">7.12</p>
+                                            </td>
+                                            <td class="py-2 border-b border-gray-200 bg-white text-sm text-right">
+                                                <button type="button"
+                                                    class="inline-block text-gray-500 hover:text-gray-700">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- Componente esqueleto-->
+                                <table class="relative min-w-full leading-normal animate-pulse">
+                                    <thead class="sticky top-0 z-20 h-10 bg-slate-300/75">
+                                    <tr class="">
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"></th>
+                                        <th class="p-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-24"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="group/row"><td colspan="5" class="h-10 bg-slate-300/25"></td></tr>
+                                        <tr class="group/row"><td colspan="5" class="h-10"></td></tr>
+                                        <tr class="group/row"><td colspan="5" class="h-10 bg-slate-300/25"></td></tr>
+                                        <tr class="group/row"><td colspan="5" class="h-10"></td></tr>
+                                        <tr class="group/row"><td colspan="5" class="h-10 bg-slate-300/25"></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-span-4 grid grid-cols-3 gap-4 items-center w-full">
+                <div class="tasa-morosidad flex flex-col items-center relative w-full p-2 bg-rose-400/25 shadow-xl rounded-lg border selection:bg-rose-300 selection:text-rose-800 border-rose-600/5 text-rose-600">
+                    <div class="flex h-24 items-center gap-3 justify-center">
+                        <h1 class="text-5xl">12%</h1>
+                        <h2 class="text-3xl text-rose-600/50 w-1/2 text-balance">Tasa de morosidad</h2>
+                    </div>
+                    <i class="bi bi-alarm absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 opacity-10 text-8xl"></i>
+                </div>
+    
+                <div class="resolucion flex flex-col items-center relative w-full p-2 bg-emerald-400/25 shadow-xl rounded-lg border selection:bg-emerald-300 selection:text-emerald-800 border-emerald-600/5 text-emerald-600">
+                    <div class="flex h-24 items-center gap-3 justify-center">
+                        <h1 class="text-5xl">23%</h1>
+                        <h2 class="text-3xl text-emerald-600/50 w-1/2 text-balance">Resolución</h2>
+                    </div>
+                    <i class="bi bi-wrench-adjustable absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 opacity-10 text-8xl"></i>
+                </div>
+    
+                <div class="tasa-incidencias  flex flex-col items-center relative w-full p-2 bg-amber-400/25 shadow-xl rounded-lg border selection:bg-amber-300 selection:text-amber-800 border-amber-600/5 text-amber-600">
+                    <div class="flex h-24 items-center gap-3 justify-center">
+                        <h1 class="text-5xl">5%</h1>
+                        <h2 class="text-3xl text-rose-600/50 w-1/2 text-balance">Tasa de incidencias</h2>
+                    </div>
+                    <i class="bi bi-bandaid absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 opacity-10 text-8xl"></i>
+                </div>
+            </div>
+        </div>
+    </content>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

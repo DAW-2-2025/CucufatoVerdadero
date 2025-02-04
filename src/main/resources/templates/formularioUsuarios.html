@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Usuario</title>
+</head>
+<body>
+    <h1 th:text="${#strings.isEmpty(usuario.id) ? 'Agregar Usuario' : 'Modificar Usuario'}"></h1>
+    <form th:action="@{/crud/usuarios/insertar}" th:object="${usuario}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <label>Nombre:</label>
+        <input type="text" th:field="*{nombre}" required/>
+        <br/>
+        <label>Correo:</label>
+        <input type="email" th:field="*{correo}" required/>
+        <br/>
+        <label>Teléfono:</label>
+        <input type="text" th:field="*{telefono}" required/>
+        <br/>
+        <button type="submit">Guardar</button>
+    </form>
+    <a href="/crud/usuarios">Volver</a>
+</body>
+</html>

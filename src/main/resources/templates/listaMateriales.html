@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de materiales</title>
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body>
+    <div class="container">
+        <div th:insert="~{index::navbar}"></div>
+        <p><a href="/crud/materiales/insertar">Insertar nuevo material</a></p>
+            <table>
+                <tr><th>Nombre</th><th>Cantidad</th><th>Imagen</th><th>Categoria</th></th><th>Modificar</th><th>Eliminar</th></tr>
+                <tr th:each="material:${pepito}">
+                    <td th:text="${material.nombre}"></td>
+                    <td th:text="${material.cantidadTotal}"></td>
+                    <td th:text="${material.area != null ? material.area.nombre : 'Sin Áreas'}"
+                        class="px-6 py-4">
+                        Áreas
+                    </td>
+                    <td>
+                        <img th:src="${'/file/download/' + material.imagen}" style="width: 50px;">
+                    </td>
+                    <td th:text="${material.categoria != null ? material.categoria.nombre : 'No Categoria'}"></td>
+                    <td><a th:href="${'/crud/materiales/modificar/' + material.id}">Modificar</a></td>
+                    <td><a onclick="return confirm('¿Quieres borrar?')" th:href="${'/crud/materiales/eliminar/' + material.id}">Eliminar</a></td>
+
+                </tr>
+            </table>
+    </div>
+</body>
+</html>

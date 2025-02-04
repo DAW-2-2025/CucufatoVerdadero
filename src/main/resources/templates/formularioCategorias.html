@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de categorías</title>
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body>
+
+<div class="container mt-3">
+    <div th:insert="~{index::navbar}"></div>
+
+    <form th:action="@{/crud/categorias/insertar}"
+                                   th:object="${categoria}"
+                                   method="post"
+                                   class="row g-3"> <div class="col-md-6">
+    <input type="hidden" th:field="*{id}">
+</div>
+    <div class="col-md-6">
+        <label for="nombre" class="form-label">Nombre:</label>
+        <input type="text" th:field="*{nombre}" class="form-control" id="nombre">
+    </div>
+    <div class="col-md-12">
+        <label for="descripcion" class="form-label">Descripción:</label>
+        <textarea th:field="*{descripcion}" rows="3" cols="40" class="form-control" id="descripcion"></textarea>
+    </div>
+    <div class="col-12">
+        <input type="submit" value="Enviar" class="btn btn-primary">
+    </div>
+</form>
+
+</div>
+
+</body>
+</html>

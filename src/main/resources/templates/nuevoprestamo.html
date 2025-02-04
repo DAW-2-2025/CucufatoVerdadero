@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo préstamo</title>
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body>
+    <div class="container">
+        <div th:insert="~{index::navbar}"></div>
+        <h1 style="margin-bottom: 40px;">Nuevo préstamo</h1>
+        <form th:object="${prestamoDto}" method="post" action="/nuevoprestamo">
+            <input type="hidden" th:field="*{fecha}">
+            <input type="text" th:field="*{usuario}" placeholder="Usuario">
+            <input type="text" th:field="*{descripcion}" placeholder="Descripción">
+            <div class="row">
+                <div class="col col-2" th:each="linea, itemStat: *{lineaPrestamoDtos}" style="margin-right: 20px; margin-top: 40px; border:dotted grey 1px;">
+                    <input type="hidden" th:field="*{lineaPrestamoDtos[__${itemStat.index}__].material.id}">
+                    <img th:src="${'/file/download/' + linea.material.imagen}" style="height: 50px;">
+                    <p th:text="${linea.material.nombre}"></p>
+                    <input type="number" th:field="*{lineaPrestamoDtos[__${itemStat.index}__].cantidadPedida}" style="width:35px;">
+                    <span th:text="${linea.cantidad}"></span>
+                </div>
+            </div>
+
+            <button class="btn" type="submit">Prestar</button>
+        </form>
+
+    </div>
+
+
+</body>
+</html>

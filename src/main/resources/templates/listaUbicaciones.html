@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de almacenes</title>
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body class="bg-[#F7EBEC] text-[#E0E5E9]">
+<div th:insert="~{index::navbar}"></div>
+<div class="flex-1 p-8 sm:ml-72">
+    <div>
+        <!--Encabezado-->
+        <div class="flex justify-center">
+            <h1 class="mb-6 text-4xl font-bold text-neutral-950">Lista de Almacenes</h1>
+        </div>
+        <!--Enlace a formulario para añadir nuevo almacén-->
+        <div class="flex justify-center mb-4">
+            <a href="/crud/ubicaciones/insertar"
+               class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none">
+                Añadir nuevo almacén
+            </a>
+        </div>
+        <!--tabla que lista los almacenes-->
+        <div class="flex flex-col items-center gap-8">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
+                <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs uppercase text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Nombre</th>
+                        <th scope="col" class="px-6 py-3">Descripción</th>
+                        <th scope="col" class="px-6 py-3">Ubicación Física</th>
+                        <th scope="col" class="px-6 py-3">Estado</th>
+                        <th scope="col" class="px-6 py-3">Responsable</th>
+                        <th scope="col" class="px-6 py-3">Capacidad Máxima</th>
+                        <th scope="col" class="px-6 py-3">Capacidad Actual</th>
+                        <th scope="col" class="px-6 py-3">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ubi : ${ubicacion}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td th:text="${ubi.nombre}"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"></td>
+                        <td th:text="${ubi.descripcion}" class="px-6 py-4"></td>
+                        <td th:text="${ubi.ubicacionFisica}" class="px-6 py-4"></td>
+                        <td th:text="${ubi.estado}" class="px-6 py-4"></td>
+                        <td th:text="${ubi.responsable}" class="px-6 py-4"></td>
+                        <td th:text="${ubi.capacidadMaxima}" class="px-6 py-4"></td>
+                        <td th:text="${ubi.capacidad}" class="px-6 py-4"></td>
+                        <td class="px-6 py-4 space-x-2">
+                            <a th:href="@{'/crud/ubicaciones/modificar/' + ${ubi.id}}"
+                               class="text-blue-600 hover:underline">Modificar</a>
+                            <a th:href="@{'/crud/ubicaciones/eliminar/' + ${ubi.id}}"
+                               onclick="return confirm('¿Quieres borrar esta ubicación?')"
+                               class="text-red-600 hover:underline">Eliminar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

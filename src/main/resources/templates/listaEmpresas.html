@@ -1,0 +1,21 @@
+<h1>Lista de Empresas</h1>
+<a href="/crud/empresas/insertar">Añadir Empresa</a>
+<a href="/">Volver</a>
+<table>
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="empresa : ${empresas}">
+        <td th:text="${empresa.nombre}"></td>
+        <td>
+            <a th:href="@{'/crud/empresas/modificar/' + ${empresa.id}}">Editar</a>
+            <a th:href="@{'/crud/empresas/eliminar/' + ${empresa.id}}">Eliminar</a>
+            <a th:href="@{'/crud/materiales/empresa/' + ${empresa.id}}">Ver Materiales</a>
+        </td>
+    </tr>
+    </tbody>
+</table>

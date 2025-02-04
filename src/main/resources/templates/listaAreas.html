@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Áreas</title>
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body class="bg-[#F7EBEC] text-[#E0E5E9]">
+<div class="flex flex-col sm:ml-72 p-8">
+    <div th:insert="~{index::navbar}"></div>
+
+    <div class="flex-1 p-8 w-full">
+        <!--Encabezado-->
+        <div class="flex justify-center">
+            <h1 class="mb-6 text-4xl font-bold text-neutral-950">Áreas</h1>
+        </div>
+
+        <!--Enlace a formulario de áreas-->
+        <div class="flex justify-center mb-4">
+            <a href="/crud/area/insertar"
+               class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none">
+                Añadir nueva área
+            </a>
+        </div>
+
+        <!--Contenedor principal-->
+        <div class="flex justify-center">
+            <div class="w-full max-w-6xl">
+                <!--tabla para listar las áreas-->
+                <section class="bg-[#1D1E2C] rounded-2xl">
+                    <div class="overflow-x-auto rounded-2xl">
+                        <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs uppercase text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 rounded-t-2xl">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Nombre</th>
+                                <th scope="col" class="px-6 py-3">Almacén</th>
+                                <th scope="col" class="px-6 py-3">Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Recorrer la lista de áreas -->
+                            <tr th:each="area : ${areas}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td th:text="${area.nombre}"
+                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">Nombre del
+                                    Área
+                                </td>
+                                <!-- Mostrar el nombre de la ubicación asociada a la área -->
+                                <td th:text="${area.ubicacion != null ? area.ubicacion.nombre : 'Sin Ubicación'}"
+                                    class="px-6 py-4">
+                                    Ubicación
+                                </td>
+                                <td class="px-6 py-4 space-x-2">
+                                    <a th:href="@{'/crud/area/modificar/' + ${area.id}}"
+                                       class="text-blue-600 hover:underline">Modificar</a>
+                                    <a th:href="@{'/crud/area/eliminar/' + ${area.id}}"
+                                       onclick="return confirm('¿Quieres borrar esta área?')"
+                                       class="text-red-600 hover:underline">Eliminar</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

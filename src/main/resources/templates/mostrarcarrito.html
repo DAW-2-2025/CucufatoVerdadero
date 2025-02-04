@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Mostrar carrito</title>
+  <div th:insert="~{index::cabecera}"></div>
+  <style>
+    .card {
+      display: block;
+      margin-bottom: 20px;
+      line-height: 1.42857143;
+      background-color: #fff;
+      border-radius: 2px;
+      box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+      transition: box-shadow .25s;
+    }
+    .card:hover {
+      box-shadow: 0 8px 17px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+      background-color: lightgrey;
+    }
+    .card-img-top {
+      width: 100%;
+      height: 15vw;
+      object-fit: cover;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <div th:insert="~{index::navbar}"></div>
+  <h1 style="margin-bottom: 40px;">Mostrar carrito</h1>
+  <div class="row" th:each="linea: ${carrito.lineaPrestamoDtos}">
+    <div class="col col-2" >
+      <img th:src="${'/file/download/' + linea.material.imagen}" class="img-thumbnail" style="height: 32px;" alt="...">
+    </div>
+    <div class="col col-1">
+      <p th:text="${linea.cantidadPedida}"></p>
+    </div>
+    <div class="col col-5">
+      <p th:text="${linea.material.nombre}"></p>
+    </div>
+    <div class="col col-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <div class="col">
+      <form action="/guardarcarrito" method="post">
+        <input type="text" name="usuario" placeholder="Usuario">
+        <input type="text" name="descripcion" placeholder="Descripción">
+        <button type="submit" class="btn btn-primary">Confirmar carrito</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

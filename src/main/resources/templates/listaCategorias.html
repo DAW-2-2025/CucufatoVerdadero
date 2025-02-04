@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de categorías</title>
+    <link rel="stylesheet" th:href="@{/css/listaCate.css}">
+    <div th:insert="~{index::cabecera}"></div>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{index::navbar}"></div>
+
+    <!-- Mensaje de éxito -->
+    <div th:if="${message}" class="alert alert-success">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- Mensaje de eliminar -->
+    <div th:if="${elimMessage}" class="alert alert-danger">
+        <p th:text="${elimMessage}"></p>
+    </div>
+
+    <h1>Listado de categorías</h1>
+    <table>
+        <tr>
+            <th>Id</th><th>Nombre</th><th>Descripción</th><th>Acciones</th>
+        </tr>
+        <tr th:each="categoria : ${maruja}">
+            <td th:text="${categoria.id}"></td>
+            <td th:text="${categoria.nombre}"></td>
+            <td th:text="${categoria.descripcion}"></td>
+            <td>
+                <div class="acciones-form">
+                    <form th:action="@{'/crud/categorias/modificar/' + ${categoria.id}}" method="get">
+                        <button type="submit">Modificar</button>
+                    </form>
+                    <form th:action="@{'/crud/categorias/eliminar/' + ${categoria.id}}" method="get">
+                        <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar esta categoría?')">Eliminar</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <p><a href="/crud/categorias/insertar">Insertar nueva categoría</a></p>
+</div>
+</body>
+</html>
